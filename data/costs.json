@@ -1,0 +1,4 @@
+{
+  "comment": "API利用料などのコスト。generate_post.py が自動追記する。サブスク内の実行は記録しない（0円）",
+  "entries": []
+}

@@ -1,0 +1,53 @@
+{
+  "site_title": "一枚の名画から",
+  "site_description": "洞窟壁画から現代美術まで。時代を超えて、名作を一枚ずつ読み解く美術史の学習ノート。",
+  "author": "boiledtomato",
+  "base_url": "https://boiledtomato.github.io/meiga-note",
+  "language": "ja",
+  "theme": {
+    "accent": "#9a4e2b",
+    "accent_dark": "#e0a07e",
+    "font": "serif"
+  },
+  "nav": [
+    {
+      "label": "今日の一枚",
+      "tag": "今日の一枚"
+    },
+    {
+      "label": "美術史",
+      "tag": "美術史"
+    }
+  ],
+  "disclaimer": "本ブログは個人の学習記録であり、各美術館とは関係ありません。作品画像はパブリックドメイン（CC0）のもののみを使用しています。",
+  "about": [
+    "古代から現代まで、時代を超えて美術作品を一枚ずつ読み解く学習ノートです。作品の見どころ、時代背景、前後の時代とのつながりを重視しています。",
+    "作品画像は、メトロポリタン美術館の Open Access（パブリックドメイン / CC0）として公開されているもののみを使用しています。記事は公開情報をもとに AI（Claude）の支援を受けて作成し、出典を明記しています。"
+  ],
+  "monetization": {
+    "adsense_client": "",
+    "amazon_associate_tag": "",
+    "pr_disclosure": "※当ブログはアフィリエイト広告（Amazonアソシエイト等）を利用しています。",
+    "affiliates": [
+      {
+        "label": "西洋美術史の入門書を探す",
+        "amazon_keyword": "西洋美術史 入門"
+      },
+      {
+        "label": "名画の画集・図録を探す",
+        "amazon_keyword": "名画 画集"
+      }
+    ]
+  },
+  "schedule": {
+    "comment": "曜日(0=月)ごとの記事タイプ。null は休み",
+    "0": null,
+    "1": "art-artwork",
+    "2": null,
+    "3": "art-topic",
+    "4": null,
+    "5": "art-artwork",
+    "6": "art-topic"
+  },
+  "publish_dashboard": false
+}
