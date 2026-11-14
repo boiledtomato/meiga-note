@@ -121,7 +121,9 @@ def artwork_brief(obj: dict) -> str:
     if tags:
         lines.append(f"- タグ: {', '.join(tags)}")
     lines.append(f"\n推奨フロントマター: topic_id: met-{obj['objectID']} / image: {obj.get('primaryImageSmall') or obj.get('primaryImage')}"
-                 " / image_credit: \"The Metropolitan Museum of Art, Public Domain (CC0)\"")
+                 f" / image_full: {obj.get('primaryImage')}"
+                 " / image_credit: \"The Metropolitan Museum of Art, Public Domain (CC0)\""
+                 f" / era: {obj.get('objectBeginDate')}（制作年の数値。紀元前はマイナス）/ era_label / points（見どころ3点の画像上の位置）")
     return "\n".join(lines)
 
 

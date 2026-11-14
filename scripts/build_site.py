@@ -24,6 +24,8 @@ from pathlib import Path
 import markdown
 import yaml
 
+import site_enhance
+
 ROOT = Path(__file__).resolve().parent.parent
 SITES = ("art",)
 OUT_ROOT = ROOT / "_site"
@@ -110,15 +112,15 @@ def css() -> str:
             else '"Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif')
     return (CSS.replace("__ACCENT__", t.get("accent", "#2f5d8a"))
                .replace("__ACCENT_DARK__", t.get("accent_dark", "#8ab4e0"))
-               .replace("__FONT__", font)).strip()
+               .replace("__FONT__", font) + site_enhance.CSS).strip()
 
 
 CSS = """
-:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5d646d;--line:#e3e0d8;--card:#fff;--accent:__ACCENT__;--code:#f2efe8}
-@media (prefers-color-scheme:dark){:root{--bg:#16181c;--fg:#e6e6e6;--muted:#a2a8b0;--line:#2c3036;--card:#1d2025;--accent:__ACCENT_DARK__;--code:#24282e}}
+:root{--warn:#b0413e;--bg:#fbfaf7;--fg:#1f2328;--muted:#5d646d;--line:#e3e0d8;--card:#fff;--accent:__ACCENT__;--code:#f2efe8}
+@media (prefers-color-scheme:dark){:root{--warn:#ff8a7a;--bg:#16181c;--fg:#e6e6e6;--muted:#a2a8b0;--line:#2c3036;--card:#1d2025;--accent:__ACCENT_DARK__;--code:#24282e}}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.85 __FONT__}
-a{color:var(--accent)}img{max-width:100%;height:auto}
+a{color:var(--accent);overflow-wrap:anywhere}img{max-width:100%;height:auto}
 .wrap{max-width:780px;margin:0 auto;padding:0 16px}
 header.site{border-bottom:1px solid var(--line);background:var(--card)}
 header.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;padding-top:14px;padding-bottom:14px}
@@ -170,10 +172,11 @@ def layout(title: str, body: str, *, description: str = "", canonical: str = "",
 <meta property="og:title" content="{e(full_title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:type" content="website">
 <link rel="alternate" type="application/rss+xml" title="{e(CFG['site_title'])}" href="{url('feed.xml')}">
 <link rel="stylesheet" href="{url('style.css')}">
+<script src="{url('assets/site.js')}" defer></script>
 {chr(10).join(head_extra)}
 </head><body>
 <header class="site"><div class="wrap"><a class="brand" href="{url('')}">{e(CFG['site_title'])}</a>
-<nav>{cats}<a href="{url('learn/')}">学習ノート</a><a href="{url('about/')}">このブログについて</a></nav></div></header>
+<nav>{cats}<a href="{url('timeline/')}">年表</a><a href="{url('learn/')}">学習ノート</a><a href="{url('about/')}">このブログについて</a></nav></div></header>
 <main><div class="wrap">{body}</div></main>
 <footer><div class="wrap">{e(CFG['monetization']['pr_disclosure'])}<br>
 {e(CFG['disclaimer'])}<br>
@@ -214,16 +217,66 @@ def affiliate_box() -> str:
     return f'<div class="box"><h2>さらに学ぶための本</h2><ul>{lis}</ul><p class="pr">PR：上記はアフィリエイトリンクです。</p></div>'
 
 
+LIST_RE = re.compile(r"^(\s*)([-*+] |\d+\. )")
+
+
+def fix_lists(text: str) -> str:
+    """段落の直後に空行なしで始まるリストを、リストとして扱われるよう空行を補う。"""
+    out, fence = [], False
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            fence = not fence
+        prev = out[-1] if out else ""
+        if (not fence and LIST_RE.match(line) and prev.strip() and not LIST_RE.match(prev)
+                and not prev.lstrip().startswith(("|", "<", "#")) and not prev.startswith(" ")):
+            out.append("")
+        out.append(line)
+    return "\n".join(out)
+
+
 def render_md(text: str) -> str:
-    return markdown.markdown(text, extensions=["tables", "fenced_code", "toc", "sane_lists"])
+    return markdown.markdown(fix_lists(text), extensions=["tables", "fenced_code", "toc", "sane_lists"])
+
+
+def mark_points(body_html: str) -> tuple[str, list[str]]:
+    """「見どころ」の h2 の下にある h3 に point-1, point-2 … の id を付ける。"""
+    m = re.search(r'<h2 id="[^"]*">見どころ[^<]*</h2>(.*?)(?=<h2 )', body_html, re.S)
+    if not m or "<h3" not in m.group(1):
+        # 「見どころ1：…」「見どころ2：…」のように h2 を並べた書き方
+        ids, n = [], 0
+        def rep2(mm):
+            nonlocal n
+            n += 1
+            ids.append(f"point-{n}")
+            return f'<h2 id="point-{n}" data-point>{mm.group(1)}'
+        out = re.sub(r'<h2 id="[^"]*">(見どころ\s*[0-9０-９])', rep2, body_html)
+        return out, ids
+    sect, ids, n = m.group(1), [], 0
+    def rep(mm):
+        nonlocal n
+        n += 1
+        ids.append(f"point-{n}")
+        return f'<h3 id="point-{n}" data-point>'
+    sect2 = re.sub(r'<h3 id="[^"]*">', rep, sect)
+    return body_html[:m.start(1)] + sect2 + body_html[m.end(1):], ids
 
 
 def post_page(p: dict, prev_p: dict | None, next_p: dict | None) -> str:
     canonical = f"{BASE}/posts/{p['slug']}/"
+    terms = [dict(t, link=url("posts/" + t["link"] + "/")) if t.get("link") else t for t in load_json("glossary.json", [])]
+    body_html, point_ids = mark_points(render_md(p["body_md"]))
+    body_html, toc = site_enhance.enhance(body_html, terms=terms, slug=url("posts/" + p["slug"] + "/"))
     fig = ""
     if p.get("image"):
-        fig = (f'<figure><img src="{e(p["image"])}" alt="{e(p["title"])}" loading="lazy">'
-               f'<figcaption>{e(p["image_credit"])}</figcaption></figure>')
+        full = f' data-full="{e(p["image_full"])}"' if p.get("image_full") else ""
+        pts = ""
+        for i, pt in enumerate(p.get("points") or []):
+            if i < len(point_ids):
+                pts += (f'<a class="pt" href="#{point_ids[i]}" style="left:{float(pt["x"]) * 100:.1f}%;top:{float(pt["y"]) * 100:.1f}%"'
+                        f' aria-label="見どころ{i + 1}へ">{i + 1}</a>')
+        hint = "（画像をクリックすると高解像度で拡大できます" + ("。番号は本文の見どころの位置です）" if pts else "）") if full else ""
+        fig = (f'<figure><span class="hot"><img src="{e(p["image"])}" alt="{e(p["title"])}" loading="lazy"{full}>{pts}</span>'
+               f'<figcaption>{e(p["image_credit"])}{hint}</figcaption></figure>')
     learn = "".join(f"<li>{e(str(x))}</li>" for x in p["learning"])
     quiz = "".join(f"<details><summary>Q{i}. {e(q['q'])}</summary><p>{e(q['a'])}</p></details>"
                    for i, q in enumerate(p["quiz"], 1))
@@ -238,7 +291,7 @@ def post_page(p: dict, prev_p: dict | None, next_p: dict | None) -> str:
 <h1>{e(p['title'])}</h1>
 {fig}
 <div class="box"><h2>この記事で学べること</h2><ul>{learn}</ul></div>
-{render_md(p['body_md'])}
+{toc}{body_html}
 <div class="box"><h2>確認クイズ</h2>{quiz}</div>
 {affiliate_box()}
 <div class="box"><h2>参考・出典</h2><ul>{srcs}</ul></div>
@@ -251,6 +304,31 @@ def post_page(p: dict, prev_p: dict | None, next_p: dict | None) -> str:
         ld["image"] = p["image"]
     return layout(p["title"], body, description=p["summary"], canonical=canonical,
                   og_image=p.get("image", ""), json_ld=ld)
+
+
+def fmt_gap(years: int) -> str:
+    if years >= 10000:
+        return f"約{round(years / 10000)}万年"
+    if years >= 1000:
+        return f"約{round(years / 100) * 100:,}年"
+    return f"約{years}年"
+
+
+def timeline_page(posts: list[dict]) -> str:
+    items = sorted([p for p in posts if p.get("era") is not None], key=lambda p: float(p["era"]))
+    rows, prev = [], None
+    for p in items:
+        era = int(float(p["era"]))
+        if prev is not None and era - prev >= 300:
+            rows.append(f'<div class="gap">― {fmt_gap(era - prev)}の隔たり ―</div>')
+        label = p.get("era_label") or (f"前{-era}年ごろ" if era < 0 else f"{era}年ごろ")
+        rows.append(f'<li><div class="era">{e(str(label))}</div><a href="{url("posts/" + p["slug"] + "/")}">{e(p["title"])}</a>'
+                    f'<p>{e(p["summary"])}</p></li>')
+        prev = era
+    body = ("<h1>年表：時代を超えてたどる</h1><p>このブログで取り上げた作品やテーマを、時代の古い順に並べました。"
+            "記事どうしの間にどれだけの時間が流れているかも示しています。</p>"
+            f'<ul class="tl">{"".join(rows)}</ul>')
+    return layout("年表", body, canonical=f"{BASE}/timeline/")
 
 
 def learn_page(posts: list[dict]) -> str:
@@ -375,6 +453,7 @@ def build(check: bool) -> int:
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
     write("style.css", css())
+    write("assets/site.js", site_enhance.js({}))
     intro = f"<p>{e(CFG['site_description'])}</p>"
     write("index.html", layout(CFG["site_title"], intro + post_list(posts), canonical=f"{BASE}/"))
     for n in CFG.get("nav", []):
@@ -386,6 +465,7 @@ def build(check: bool) -> int:
         next_p = posts[i - 1] if i > 0 else None
         write(f"posts/{p['slug']}/index.html", post_page(p, prev_p, next_p))
     write("learn/index.html", learn_page(posts))
+    write("timeline/index.html", timeline_page(posts))
     write("about/index.html", about_page())
     write("feed.xml", feed_xml(posts))
     write("sitemap.xml", sitemap_xml(posts))

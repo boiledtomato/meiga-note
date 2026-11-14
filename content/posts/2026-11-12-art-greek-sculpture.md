@@ -3,6 +3,9 @@ title: "古代ギリシャ彫刻の300年：アルカイックの微笑からヘ
 date: 2026-11-12
 tags: [美術史, 古代ギリシャ, 彫刻, クーロス, メトロポリタン美術館]
 summary: "直立して前を見つめるクーロス像から、身体をひねるコントラポスト、苦悶に満ちたヘレニズム彫刻へ。古代ギリシャ彫刻がおよそ300年で「動き」と「感情」を手に入れていった流れを、Met所蔵のクーロス像を手がかりにたどります。"
+era: -590
+era_label: "前600年ごろ〜前31年（作例は前590〜前580年ごろ）"
+image_full: "https://images.metmuseum.org/CRDImages/gr/original/DP-23263-005.jpg"
 topic_id: art-greek-sculpture
 image: "https://images.metmuseum.org/CRDImages/gr/web-large/DP-23263-005.jpg"
 image_credit: "Marble statue of a kouros (youth), Greek, Attic, ca. 590–580 BCE. The Metropolitan Museum of Art, Fletcher Fund, 1932, Public Domain (CC0)"
