@@ -142,7 +142,55 @@ background:var(--accent);color:var(--card);font-weight:700;font-size:.85rem;bord
 .tl li::before{content:"";position:absolute;left:-37px;top:.45em;width:13px;height:13px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
 .tl .era{font-weight:700;color:var(--accent);font-size:.92rem}.tl .gap{color:var(--muted);font-size:.8rem;margin:-10px 0 18px}
 .tl a{font-weight:700;text-decoration:none;color:var(--fg)}.tl p{margin:.2em 0 0;color:var(--muted);font-size:.88rem}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- 動き：一覧・ヒーロー・図・見出し ---- */
+.wrap.wide{max-width:1100px}
+.post-hero{margin:0 -16px 8px;padding:22px 16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,var(--card)),var(--card) 70%);border-bottom:1px solid var(--line);border-radius:0 0 14px 14px}
+.post-hero .kind{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.04em;color:var(--card);background:var(--accent);border-radius:4px;padding:1px 8px;margin-right:8px}
+.post-hero h1{margin:.35em 0 .3em}.post-hero .rt{color:var(--muted);font-size:.82rem}
+.minibar{position:fixed;top:0;left:0;right:0;z-index:25;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+transform:translateY(-100%);transition:transform .25s ease;font-size:.86rem}.minibar.on{transform:none}
+.minibar .wrap{display:flex;gap:12px;align-items:center;padding-top:8px;padding-bottom:8px}.minibar b{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}.rv.in{opacity:1;transform:none}
+.fig.anim svg>*{opacity:0;transform:translateY(6px);transform-box:fill-box;transition:opacity .45s ease var(--d,0s),transform .45s ease var(--d,0s)}
+.fig.anim.in svg>*{opacity:1;transform:none}.fig.anim svg>defs{opacity:1}
+.fig.anim .la.draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .8s ease var(--d,0s),opacity .3s ease var(--d,0s)}.fig.anim.in .la.draw{stroke-dashoffset:0}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:26px 0 14px}
+.fchip{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:99px;padding:4px 14px;cursor:pointer;transition:all .2s}
+.fchip span{color:var(--muted);font-size:.78rem;margin-left:4px}.fchip.on{background:var(--accent);border-color:var(--accent);color:var(--card)}.fchip.on span{color:var(--card)}
+.fsearch{flex:1 1 180px;min-width:150px;font:inherit;font-size:.88rem;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--fg)}
+.cards{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{transition:opacity .3s ease,transform .3s ease}.card.hide{display:none}.card.pop{animation:pop .35s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.card a{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+border-top:4px solid var(--c,var(--accent));transition:transform .2s ease,box-shadow .2s ease}
+.card a:hover,.card a:focus-visible{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.10)}
+.card .thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--code);transition:transform .5s ease}.card a:hover .thumb{transform:scale(1.05)}
+.card .in{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}.card .k{font-size:.72rem;font-weight:700;color:var(--c,var(--accent))}
+.card h3{margin:0;font-size:.98rem;line-height:1.5}.card p{margin:0;font-size:.82rem;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .m{margin-top:auto;font-size:.75rem;color:var(--muted)}.noresult{color:var(--muted);text-align:center;padding:30px 0}
+.board{margin:26px 0 6px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.board h2{margin:0;border:0;padding:0;font-size:1.1rem}.board .sub{color:var(--muted);font-size:.82rem;margin:2px 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media (max-width:640px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{display:block;text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);transition:transform .2s,box-shadow .2s}
+a.tile:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.08)}.tile .p{font-weight:700;font-size:.85rem}.tile b{display:block;font-size:2rem;line-height:1.2;color:var(--accent)}
+.tile .u{font-size:.75rem;color:var(--muted)}.tile .st{display:inline-block;margin-top:6px;font-size:.72rem;border-radius:99px;padding:1px 8px;background:var(--code)}
+.tile.done .st{background:var(--accent);color:var(--card)}.tile.none{opacity:.6}.tile.none b{color:var(--muted)}
+.mine{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,transparent);font-size:.88rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mine b{font-size:1.3rem;color:var(--accent)}.incs{margin-top:12px}.incs h3{font-size:.9rem;margin:0 0 6px}.incs ul{list-style:none;padding:0;margin:0}
+.incs li{display:flex;gap:8px;align-items:baseline;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}.incs li a{color:var(--fg);text-decoration:none;flex:1}
+.incs .cl{font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 6px;color:var(--muted);white-space:nowrap}.incs li.mine-hit .cl{border-color:var(--warn);color:var(--warn);font-weight:700}
+.hero{position:relative;display:block;margin:20px 0 6px;border-radius:14px;overflow:hidden;aspect-ratio:16/8;background:#111;color:#fff;text-decoration:none}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;animation:kb 18s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.12) translate(-2%,-2%)}}
+.hero .cap{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;background:linear-gradient(transparent,rgba(0,0,0,.78))}
+.hero .cap small{opacity:.85;font-size:.78rem}.hero .cap b{display:block;font-size:1.25rem;line-height:1.45;margin-top:4px}
+@media (max-width:640px){.hero{aspect-ratio:4/3}.hero .cap b{font-size:1.05rem}}
+.strip{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 4px 6px;margin:8px 0 0;position:relative}
+.strip a{flex:0 0 auto;scroll-snap-align:start;text-decoration:none;color:var(--fg);min-width:150px;max-width:170px;padding:24px 12px 4px;position:relative;font-size:.8rem;line-height:1.5;border-top:2px solid var(--line)}
+.strip a::before{content:"";position:absolute;top:-8px;left:12px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);transition:transform .2s}
+.strip a:hover::before{transform:scale(1.5)}.strip .y{display:block;font-weight:700;color:var(--accent);font-size:.78rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,.fig.anim svg>*{opacity:1!important;transform:none!important}}
 """
 
 
@@ -271,7 +319,7 @@ _JS = r"""
       });
     }
     const cloudBar = $(".envbar[data-env]");
-    function apply() {
+    let apply = function () {
       btn.textContent = sumText();
       let hit = 0;
       marks.forEach((m) => {
@@ -290,9 +338,66 @@ _JS = r"""
         else if (clouds.some((c) => mine.includes(c))) { t.textContent = "⚠ あなたのクラウド（" + mine.filter((c) => clouds.includes(c)).map(label).join("、") + "）が対象の障害です"; cloudBar.classList.add("hit"); }
         else { t.textContent = "あなたのクラウド（" + mine.map(label).join("、") + "）は対象外です。対象：" + clouds.map(label).join("、"); cloudBar.classList.remove("hit"); }
       }
-    }
+    };
     if (cloudBar) cloudBar.addEventListener("click", (ev) => { if (ev.target.dataset.x === "set") btn.click(); });
+    const idx = $("#env-index"), mine = $(".mine");
+    const board = () => {
+      if (!idx || !mine) return;
+      const data = JSON.parse(idx.textContent); let total = 0, hit = 0;
+      data.items.forEach((tags) => { total++; if (relevant(tags)) hit++; });
+      $(".mtext", mine).innerHTML = configured()
+        ? '今週の変更のうち、マイ環境に関係するもの <b data-n>' + hit + "</b> 件（全 " + total + " 件）"
+        : "マイ環境（クラウド・OS・使っている機能）を登録すると、今週の変更のうち自社に関係する件数がここに出ます。";
+      $$(".incs li").forEach((li) => li.classList.toggle("mine-hit", (li.dataset.clouds || "").split(" ").some((c) => (env.cloud || []).includes(c))));
+    };
+    if (mine) $("button", mine).addEventListener("click", () => btn.click());
+    const apply0 = apply; apply = function () { apply0(); board(); };
     apply();
+  }
+
+
+  const calm = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  /* 図：画面に入ったら、要素を順番に表示し、強調の矢印を描く（因果や時系列を順に追えるように） */
+  if (!calm && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { threshold: 0.25 });
+    $$(".fig").forEach((f) => {
+      const kids = [...(f.querySelector("svg") || { children: [] }).children].filter((k) => k.tagName.toLowerCase() !== "defs");
+      const step = Math.min(45, 1100 / Math.max(1, kids.length));
+      kids.forEach((k, i) => { k.style.setProperty("--d", (i * step) / 1000 + "s"); if (k.matches(".la") && !k.getAttribute("stroke-dasharray")) { k.setAttribute("pathLength", "1"); k.classList.add("draw"); } });
+      f.classList.add("anim"); io.observe(f);
+    });
+    const ro = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); ro.unobserve(en.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    $$("article .box, article table, ul.tasks, article figure:not(.fig), .board, .hero").forEach((el) => {
+      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("rv"); ro.observe(el); }
+    });
+  }
+  /* 数字のカウントアップ */
+  $$("[data-count]").forEach((el) => {
+    const to = +el.dataset.count; if (calm || !to) { el.textContent = to; return; }
+    const t0 = performance.now(), dur = 900; const tick = (t) => { const k = Math.min(1, (t - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(tick); };
+    el.textContent = 0; requestAnimationFrame(tick);
+  });
+  /* 記事を読み進めたら、上にタイトルの細いバーを出す */
+  const h1 = $("article h1");
+  if (h1) {
+    const mb = document.createElement("div"); mb.className = "minibar"; mb.innerHTML = '<div class="wrap"><b></b><a href="#top">↑ 先頭へ</a></div>';
+    $("b", mb).textContent = h1.textContent; document.body.append(mb);
+    $("a", mb).addEventListener("click", (ev) => { ev.preventDefault(); scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" }); });
+    if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => mb.classList.toggle("on", !en.isIntersecting && en.boundingClientRect.top < 0)).observe(h1);
+  }
+  /* 記事一覧：種類のフィルタと検索 */
+  const cards = $$(".cards .card");
+  if (cards.length) {
+    let cat = "all", q = "";
+    const nores = $(".noresult");
+    const run = () => {
+      let n = 0;
+      cards.forEach((c) => { const ok = (cat === "all" || c.dataset.cat === cat) && (!q || c.dataset.text.includes(q));
+        const was = !c.classList.contains("hide"); c.classList.toggle("hide", !ok); if (ok) { n++; if (!was && !calm) { c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop"); } } });
+      if (nores) nores.hidden = n > 0;
+    };
+    $$(".fchip").forEach((b) => b.addEventListener("click", () => { $$(".fchip").forEach((x) => x.classList.toggle("on", x === b)); cat = b.dataset.f; run(); }));
+    const s = $(".fsearch"); if (s) s.addEventListener("input", () => { q = s.value.trim().toLowerCase(); run(); });
   }
 
   /* 画像ビューア（美術ブログ）：クリックで高解像度画像を拡大・移動 */

@@ -49,5 +49,6 @@
     "5": "art-artwork",
     "6": "art-topic"
   },
-  "publish_dashboard": false
+  "publish_dashboard": false,
+  "search_hint": "記事を検索（例：ゴッホ、パステル、古代）"
 }
